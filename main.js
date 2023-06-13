@@ -3,7 +3,7 @@ function validarUsuario() {
     //variable de loguin usuario
     let usuario = prompt("Ingresa tu nombre de usuario:");
     //se crea variable para analizar espacios en blanco y tabulaciones.
-    let expresionRegular = /\s/;
+    const expresionRegular = /\s/;
 
     // En el ciclo se utilisa el metodo test para analizar espacios en blanco y tabulacion, tambien se toma en cuanta que el clietne no ingrese datos en la validacion.
     while (expresionRegular.test(usuario) || usuario === "") {
@@ -31,35 +31,71 @@ switch (sucursal) {
     //se usa un condicional para definir la variable y mostrar por pantalla el resultado de la elección
     case "1":
         nombreSucursal = "Villa Maria";
-        alert("Has seleccionado la sucursal " +nombreSucursal );
+        alert("Has seleccionado la sucursal " + nombreSucursal);
         break;
     case "2":
         nombreSucursal = "Cordoba";
-        alert("Has seleccionado la sucursal " +nombreSucursal );
+        alert("Has seleccionado la sucursal " + nombreSucursal);
         break;
     default:
         nombreSucursal = "Alta Gracia";
-        alert("Has seleccionado la sucursal " +nombreSucursal );
+        alert("Has seleccionado la sucursal " + nombreSucursal);
 }
-//se harcodean los dias disponibles por falta de APi calendar , se agregara en futuras actualizaciones
+
 function programarTurno() {
     let dia;
     let mes;
     let hora;
-    
+
     while (true) {
-        dia = parseInt(prompt("Por favor, ingresa el día del turno:"));
+        const today = new Date(); // Obtener la fecha actual
+        dia = parseInt(prompt("Por favor, ingresa el dia del turno:"));
         mes = parseInt(prompt("Por favor, ingresa el mes del turno:"));
         hora = parseInt(prompt("Por favor, ingresa la hora del turno (de 8 a 12):"));
-    // Validar hora, día y  mes.  
-        if (dia >= 1 && dia <= 31 && mes >= 5 && mes <= 12 && hora >= 8 && hora <= 12) {
-            break; // Salir del bucle si la fecha es valida
+        
+        // Validar hora, dia y  mes.  
+        const turnoDate = new Date(today.getFullYear(), mes - 1, dia, hora);
+        if (turnoDate > today && dia >= 1 && dia <= 31 && mes >= 1 && mes <= 12 && hora >= 8 && hora <= 12) {
+            break; // Salir del bucle si la fecha es válida
+        }
+
+        alert("La fecha ingresada no es valida. Por favor, intenta nuevamente.");
+    }
+    
+// Mostrar todos los servicios y obtener los seleccionados por el usuario
+const serviciosSeleccionados = [];
+let total = 0;
+
+let mensaje = 'Elige los servicios que deseas agregar al turno:\n\n';
+for (const servicio of servicios) {
+    mensaje += `${servicio.id}. ${servicio.nombre} - Precio: $${servicio.precio}\n`;
+}
+
+while (true) {
+    const seleccion = prompt(`${mensaje}\nIngresa el ID del servicio que deseas agregar (o "0" para finalizar):`);
+
+    if (seleccion === '0') {
+        break;
     }
 
-    alert("La fecha ingresada no es valida. Por favor, intenta nuevamente.");
-    }
+    const servicioElegido = servicios.find(servicio => servicio.id === parseInt(seleccion));
 
-    alert("Has programado un turno para el día " + dia + " del mes " + mes + " del año 2023 a las " + hora + " horas , en la sucursal "+ nombreSucursal);
+    if (servicioElegido) {
+        serviciosSeleccionados.push(servicioElegido);
+        total += servicioElegido.precio;
+    } else {
+        alert('ID invalido. Por favor, ingresa un ID valido.');
+    }
+}
+
+// Mostrar los servicios seleccionados y el valor total
+mensaje = 'Se realizaran los siguientes servicios:\n\n';
+for (const servicio of serviciosSeleccionados) {
+    mensaje += `${servicio.nombre} - Precio: $${servicio.precio}\n`;
+}
+mensaje += `\nValor total: $${total}\n\n Ante cualquier duda o consulta , no dude en contactarnos`;
+
+
+    alert("Has programado un turno para el dia " + dia + " del mes " + mes + " del año 2023 a las " + hora + " horas , en la sucursal " + nombreSucursal + `\n\n ${mensaje} \n`);
 }
 programarTurno();
-

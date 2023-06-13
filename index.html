@@ -1,13 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Turnero</title>
 </head>
+
 <body>
     <h1>Turnero</h1>
+    <form id="loginForm">
+        <label for="usuario">Nombre de usuario:</label>
+        <input type="text" id="usuario" name="usuario" required><br>
+
+        <button type="submit">Iniciar sesión</button>
+    </form>
+
+    <form id="sucursalForm" >
+        <label for="sucursal">Selecciona una sucursal:</label>
+        <select id="sucursal" name="sucursal" required>
+            <option value="1">Villa Maria</option>
+            <option value="2">Cordoba</option>
+            <option value="3">Alta Gracia</option>
+        </select><br>
+
+        <button type="submit">Seleccionar sucursal</button>
+    </form>
+    <form id="turnoForm">
+        <label for="dia">Día del turno:</label>
+        <input type="number" id="dia" name="dia" required min="1" max="31"><br>
+
+        <label for="mes">Mes del turno:</label>
+        <input type="number" id="mes" name="mes" required min="1" max="12"><br>
+
+        <label for="hora">Hora del turno (de 8 a 12):</label>
+        <input type="number" id="hora" name="hora" required min="8" max="12"><br>
+
+        <button type="submit">Programar Turno</button>
+    </form>
+    <ul id="serviciosList">
+        <li><input type="checkbox" name="Servicio 1000 km " value="1"> Servicio 1000 km</li>
+        <li><input type="checkbox" name="Servicio 5000 km" value="2"> Servicio 5000 km</li>
+        <li><input type="checkbox" name="Servicio 10000 km" value="3"> Servicio 10000 km</li>
+        <li><input type="checkbox" name="Servicio 15000 km " value="4"> Servicio 15000 km</li>
+        <li><input type="checkbox" name="Servicio 20000 km" value="5"> Servicio 20000 km</li>
+        <li><input type="checkbox" name="Servicio 25000 km" value="6"> Servicio 25000 km</li>
+        <li><input type="checkbox" name="Servicio 30000 km " value="7"> Servicio 30000 km</li>
+        <li><input type="checkbox" name="Servicio +30000 km" value="8"> Servicio +30000 km</li>
+        <li><input type="checkbox" name="Polarizado" value="9"> Polarizado</li>
+        <li><input type="checkbox" name="Lavado y Pulido" value="10"> Lavado y Pulido</li>
+    </ul>
+    <script src="servicios.js"></script>
     <script src="main.js"></script>
 </body>
+
 </html>
