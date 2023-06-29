@@ -1,101 +1,102 @@
-//Validacion de usuario. Los usuarios no pueden tener espacios en blanco.
+// Funcion para mostrar un mensaje de usuario valido
+function mostrarMensajeExito(mensaje) {
+    const mensajeElement = document.createElement('p');
+    mensajeElement.textContent = mensaje;
+    mensajeElement.classList.add('text-success');
+    document.body.appendChild(mensajeElement);
+}
+
+// Funcion para mostrar un mensaje de error
+function mostrarMensajeError(mensaje) {
+    const mensajeElement = document.createElement('p');
+    mensajeElement.textContent = mensaje;
+    mensajeElement.classList.add('text-danger');
+    document.body.appendChild(mensajeElement);
+}
+
+// Funcion para validar el usuario
 function validarUsuario() {
-    //variable de loguin usuario
-    let usuario = prompt("Ingresa tu nombre de usuario:");
-    //se crea variable para analizar espacios en blanco y tabulaciones.
-    const expresionRegular = /\s/;
+    const usuarioInput = document.getElementById('usuario');
+    const usuario = usuarioInput.value.trim();
 
-    // En el ciclo se utilisa el metodo test para analizar espacios en blanco y tabulacion, tambien se toma en cuanta que el clietne no ingrese datos en la validacion.
-    while (expresionRegular.test(usuario) || usuario === "") {
-        //Si se detecta que el usuario ingresado es invalido , se vuelve a solictar ingresarlo
-        alert("Has ingresado un usuario no valido. Por favor, intentalo nuevamente.");
-        usuario = prompt("Ingresa tu nombre de usuario:");
+    if (usuario === '') {
+        mostrarMensajeError('Debes ingresar un nombre de usuario valido.');
+        return false;
     }
-    //Si el usuario es correcto se emite la alerta de bienvenido
-    alert("Bienvenido: " + usuario);
+    localStorage.setItem('usuario', usuario);
+
+    mostrarMensajeExito('¡Bienvenido, ' + usuario + '!');
+    return true;
 }
 
-// se llama a la funcion de validacion.
-validarUsuario();
-//Se solicita al usuario que defina la sucursal donde quiere hacer el turno
-let sucursal = prompt("Por favor, selecciona una sucursal:\n1. Villa Maria \n2. Cordoba \n3. Alta Gracia ");
+// Evento submit del formulario de inicio de sesion
+const loginForm = document.getElementById('loginForm');
+loginForm.addEventListener('submit', function (event) {
+    event.preventDefault(); // Evitar el envio del formulario
 
-while (sucursal !== "1" && sucursal !== "2" && sucursal !== "3") {
-    //Si el usuario ingresa un valor diferente a 1, 2 o 3 se indica que no es valido y se vuelve a solictar la sucursal.
-    alert("Has ingresado una sucursal no válida. Por favor, selecciona una sucursal válida.");
-    sucursal = prompt("Por favor, selecciona una sucursal:\n1. Villa Maria\n2. Cordoba\n3. Alta Gracia");
-}
-//se crea una variable para alojar el nombre de la sucursal
-let nombreSucursal;
-switch (sucursal) {
-    //se usa un condicional para definir la variable y mostrar por pantalla el resultado de la elección
-    case "1":
-        nombreSucursal = "Villa Maria";
-        alert("Has seleccionado la sucursal " + nombreSucursal);
-        break;
-    case "2":
-        nombreSucursal = "Cordoba";
-        alert("Has seleccionado la sucursal " + nombreSucursal);
-        break;
-    default:
-        nombreSucursal = "Alta Gracia";
-        alert("Has seleccionado la sucursal " + nombreSucursal);
-}
+    if (validarUsuario()) {
+            mostrarMensajeExito('Usuario valido. Acceso permitido.');
 
+    // Ocultar formulario de inicio de sesion
+    loginForm.style.display = 'none';
+    }
+});
+
+// Funcin para programar un turno
 function programarTurno() {
-    let dia;
-    let mes;
-    let hora;
+    const diaInput = document.getElementById('dia');
+    const mesInput = document.getElementById('mes');
+    const horaInput = document.getElementById('hora');
 
-    while (true) {
-        const today = new Date(); // Obtener la fecha actual
-        dia = parseInt(prompt("Por favor, ingresa el dia del turno:"));
-        mes = parseInt(prompt("Por favor, ingresa el mes del turno:"));
-        hora = parseInt(prompt("Por favor, ingresa la hora del turno (de 8 a 12):"));
-        
-        // Validar hora, dia y  mes.  
-        const turnoDate = new Date(today.getFullYear(), mes - 1, dia, hora);
-        if (turnoDate > today && dia >= 1 && dia <= 31 && mes >= 1 && mes <= 12 && hora >= 8 && hora <= 12) {
-            break; // Salir del bucle si la fecha es válida
-        }
+    const dia = parseInt(diaInput.value);
+    const mes = parseInt(mesInput.value);
+    const hora = parseInt(horaInput.value);
 
-        alert("La fecha ingresada no es valida. Por favor, intenta nuevamente.");
+    if (isNaN(dia) || isNaN(mes) || isNaN(hora) || dia < 1 || dia > 31 || mes < 1 || mes > 12 || hora < 8 || hora > 12) {
+        mostrarMensajeError('La fecha y hora ingresadas no son validas.');
+        return;
+    }
+
+    const serviciosSeleccionados = Array.from(document.querySelectorAll('input[name="servicio"]:checked'));
+    const total = serviciosSeleccionados.reduce((sum, servicio) => sum + parseInt(servicio.dataset.precio), 0);
+
+    if (serviciosSeleccionados.length === 0) {
+        mostrarMensajeError('Debes seleccionar al menos un servicio.');
+        return;
     }
     
-// Mostrar todos los servicios y obtener los seleccionados por el usuario
-const serviciosSeleccionados = [];
-let total = 0;
+    let mensaje = 'Se realizaran los siguientes servicios:\n\n';
+    serviciosSeleccionados.forEach(servicio => {
+        const nombreServicio = servicio.parentNode.textContent.trim();
+        mensaje += `${nombreServicio}\n`;
+    });
+    mensaje += `\nValor total: $${total}`;
+    //mostrarMensajeExito(mensaje);
 
-let mensaje = 'Elige los servicios que deseas agregar al turno:\n\n';
-for (const servicio of servicios) {
-    mensaje += `${servicio.id}. ${servicio.nombre} - Precio: $${servicio.precio}\n`;
+    // Obtener la sucursal seleccionada
+    const sucursalSelect = document.getElementById('sucursal');
+    const sucursal = sucursalSelect.options[sucursalSelect.selectedIndex].text;
+
+    // Obtener la fecha y hora del turno
+    const fechaHoraTurno = `${dia}/${mes} de 2023, ${hora}:00 hs`;
+
+    // Guardar los datos del turno en el almacenamiento local
+    const turno = {
+        sucursal: sucursal,
+        fechaHora: fechaHoraTurno,
+        servicios: serviciosSeleccionados.map(servicio => servicio.value)
+    };
+    localStorage.setItem('turno', JSON.stringify(turno));
+
+    // Mostrar mensaje 
+    const mensajeConfirmacion = `Se genero un turno en la sucursal ${sucursal} para el ${fechaHoraTurno}. Servicios seleccionados: ${mensaje}`;
+    mostrarMensajeExito(mensajeConfirmacion);
 }
 
-while (true) {
-    const seleccion = prompt(`${mensaje}\nIngresa el ID del servicio que deseas agregar (o "0" para finalizar):`);
+// Evento submit del formulario de programacion de turno
+const turnoForm = document.getElementById('turnoForm');
+turnoForm.addEventListener('submit', function (event) {
+    event.preventDefault(); // Evitar el envío del formulario
 
-    if (seleccion === '0') {
-        break;
-    }
-
-    const servicioElegido = servicios.find(servicio => servicio.id === parseInt(seleccion));
-
-    if (servicioElegido) {
-        serviciosSeleccionados.push(servicioElegido);
-        total += servicioElegido.precio;
-    } else {
-        alert('ID invalido. Por favor, ingresa un ID valido.');
-    }
-}
-
-// Mostrar los servicios seleccionados y el valor total
-mensaje = 'Se realizaran los siguientes servicios:\n\n';
-for (const servicio of serviciosSeleccionados) {
-    mensaje += `${servicio.nombre} - Precio: $${servicio.precio}\n`;
-}
-mensaje += `\nValor total: $${total}\n\n Ante cualquier duda o consulta , no dude en contactarnos`;
-
-
-    alert("Has programado un turno para el dia " + dia + " del mes " + mes + " del año 2023 a las " + hora + " horas , en la sucursal " + nombreSucursal + `\n\n ${mensaje} \n`);
-}
-programarTurno();
+    programarTurno();
+});
