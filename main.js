@@ -71,6 +71,8 @@ function programarTurno() {
         mensaje += `${nombreServicio}\n`;
     });
     mensaje += `\nValor total: $${total}`;
+
+    //no olvidar eliminar
     //mostrarMensajeExito(mensaje);
 
     // Obtener la sucursal seleccionada
@@ -80,7 +82,7 @@ function programarTurno() {
     // Obtener la fecha y hora del turno
     const fechaHoraTurno = `${dia}/${mes} de 2023, ${hora}:00 hs`;
 
-    // Guardar los datos del turno en el almacenamiento local
+    // Guardar los datos del turno
     const turno = {
         sucursal: sucursal,
         fechaHora: fechaHoraTurno,
@@ -96,7 +98,7 @@ function programarTurno() {
 // Evento submit del formulario de programacion de turno
 const turnoForm = document.getElementById('turnoForm');
 turnoForm.addEventListener('submit', function (event) {
-    event.preventDefault(); // Evitar el envío del formulario
+    event.preventDefault(); // Evitar el envio del formulario
 
     programarTurno();
 });
